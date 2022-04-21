@@ -45,24 +45,41 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = 0; //fixme
+  var solutionCount = 0;
+  if (n === 1) {
+    return 1;
+  }
+  let availableSpaces = Array(n).fill(1).map(a => Array(n).fill(0));
 
   let recur = function(row) {
     for (let i = 0; i < n; i++) {
-      board.togglePiece(row, i);
-      if (!board.hasAnyRooksConflicts()) {
+      if (availableSpaces[row][i] === 0) {
+
+        availableSpaces[row] = availableSpaces[row].map(function(elem, index, array) {
+          return elem + 1;
+        });
+        availableSpaces = availableSpaces.map(function(elem, index, array) {
+          elem[i]++;
+          return elem;
+        });
         if (row === n - 1) {
           solutionCount++;
         } else {
           recur(row + 1);
         }
+
+        availableSpaces[row] = availableSpaces[row].map(function(elem, index, array) {
+          return elem - 1;
+        });
+        availableSpaces = availableSpaces.map(function(elem, index, array) {
+          elem[i]--;
+          return elem;
+        });
       }
-      board.togglePiece(row, i);
     }
   };
-  let board = new Board({n: n});
-  recur(0);
 
+  recur(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -104,23 +121,83 @@ window.findNQueensSolution = function(n) {
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   var solutionCount = 0; //fixme
-  if (n === 0) {
+  if (n <= 1) {
     return 1;
   }
+
+  let availableSpaces = Array(n).fill(1).map(a => Array(n).fill(0));
+
   let recur = function(row) {
     for (let i = 0; i < n; i++) {
-      board.togglePiece(row, i);
-      if (!board.hasAnyQueensConflicts()) {
+      if (availableSpaces[row][i] === 0) {
+
+        availableSpaces[row] = availableSpaces[row].map(function(elem, index, array) {
+          return elem + 1;
+        });
+        availableSpaces = availableSpaces.map(function(elem, index, array) {
+          elem[i]++;
+          return elem;
+        });
+
+        let colIdx = i + 1;
+        for (let j = row + 1; j < n && colIdx < n; j++) {
+          availableSpaces[j][colIdx]++;
+          colIdx++;
+        }
+        colIdx = i - 1;
+        for (let j = row + 1; j < n && colIdx > -1; j++) {
+          availableSpaces[j][colIdx]++;
+          colIdx--;
+        }
+        colIdx = i + 1;
+        for (let j = row - 1; j > -1 && colIdx < n; j--) {
+          availableSpaces[j][colIdx]++;
+          colIdx++;
+        }
+        colIdx = i - 1;
+        for (let j = row - 1; j > -1 && colIdx > -1; j--) {
+          availableSpaces[j][colIdx]++;
+          colIdx--;
+        }
+
         if (row === n - 1) {
           solutionCount++;
         } else {
           recur(row + 1);
         }
+
+        availableSpaces[row] = availableSpaces[row].map(function(elem, index, array) {
+          return elem - 1;
+        });
+        availableSpaces = availableSpaces.map(function(elem, index, array) {
+          elem[i]--;
+          return elem;
+        });
+
+        colIdx = i + 1;
+        for (let j = row + 1; j < n && colIdx < n; j++) {
+          availableSpaces[j][colIdx]--;
+          colIdx++;
+        }
+        colIdx = i - 1;
+        for (let j = row + 1; j < n && colIdx > -1; j++) {
+          availableSpaces[j][colIdx]--;
+          colIdx--;
+        }
+        colIdx = i + 1;
+        for (let j = row - 1; j > -1 && colIdx < n; j--) {
+          availableSpaces[j][colIdx]--;
+          colIdx++;
+        }
+        colIdx = i - 1;
+        for (let j = row - 1; j > -1 && colIdx > -1; j--) {
+          availableSpaces[j][colIdx]--;
+          colIdx--;
+        }
       }
-      board.togglePiece(row, i);
     }
   };
-  let board = new Board({n: n});
+
   recur(0);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
