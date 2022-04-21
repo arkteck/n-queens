@@ -131,12 +131,15 @@
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       let rows = this.rows();
-      for (let i = 0; i < rows[0].length; i++) {
-        let sum = 0;
-        for (let j = 0; j < rows.length; j++) {
-          sum += rows[j][i];
-          if (sum > 1) {
-            return true;
+      if (rows.length) {
+
+        for (let i = 0; i < rows[0].length; i++) {
+          let sum = 0;
+          for (let j = 0; j < rows.length; j++) {
+            sum += rows[j][i];
+            if (sum > 1) {
+              return true;
+            }
           }
         }
       }
@@ -168,38 +171,40 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       let rows = this.rows();
-
-      for (let i = 0; i < rows[0].length - 1; i++) {
-        let sum = 0;
-        let majorDiagonalColumnIndexAtFirstRow = i;
-        let rowIndex = 0;
-        for (let j = majorDiagonalColumnIndexAtFirstRow; j < rows[0].length; j++) {
-          sum += rows[rowIndex][j];
-          if (sum > 1) {
-            return true;
+      if (rows.length) {
+        for (let i = 0; i < rows[0].length - 1; i++) {
+          let sum = 0;
+          let majorDiagonalColumnIndexAtFirstRow = i;
+          let rowIndex = 0;
+          for (let j = majorDiagonalColumnIndexAtFirstRow; j < rows[0].length; j++) {
+            sum += rows[rowIndex][j];
+            if (sum > 1) {
+              return true;
+            }
+            rowIndex++;
+            if (rowIndex > rows.length) {
+              break;
+            }
           }
-          rowIndex++;
-          if (rowIndex > rows.length) {
-            break;
+        }
+
+        for (let i = 1; i < rows.length - 1; i++) {
+          let sum = 0;
+          let majorDiagonalRowIndexAtFirstColumn = i;
+          let colIndex = 0;
+          for (let j = majorDiagonalRowIndexAtFirstColumn; j < rows.length; j++) {
+            sum += rows[j][colIndex];
+            if (sum > 1) {
+              return true;
+            }
+            colIndex++;
+            if (colIndex > rows[0].length) {
+              break;
+            }
           }
         }
       }
 
-      for (let i = 1; i < rows.length - 1; i++) {
-        let sum = 0;
-        let majorDiagonalRowIndexAtFirstColumn = i;
-        let colIndex = 0;
-        for (let j = majorDiagonalRowIndexAtFirstColumn; j < rows.length; j++) {
-          sum += rows[j][colIndex];
-          if (sum > 1) {
-            return true;
-          }
-          colIndex++;
-          if (colIndex > rows[0].length) {
-            break;
-          }
-        }
-      }
 
       return false; // fixme
     },
@@ -229,37 +234,39 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       let rows = this.rows();
-
-      for (let i = 1; i < rows[0].length; i++) {
-        let sum = 0;
-        let minorDiagonalColumnIndexAtFirstRow = i;
-        let rowIndex = 0;
-        for (let j = minorDiagonalColumnIndexAtFirstRow; j > -1; j--) {
-          sum += rows[rowIndex][j];
-          if (sum > 1) {
-            return true;
-          }
-          rowIndex++;
-          if (rowIndex > rows.length) {
-            break;
-          }
-        }
-      }
-
-      for (let i = 1; i < rows.length - 1; i++) {
-        let sum = 0;
-        let minorDiagonalRowIndexAtFirstColumn = i;
-        let colIndex = rows[0].length - 1;
-        for (let j = minorDiagonalRowIndexAtFirstColumn; j < rows.length; j++) {
-          sum += rows[j][colIndex];
-          if (sum > 1) {
-            return true;
-          }
-          colIndex--;
-          if (colIndex < 0) {
-            break;
+      if (rows.length) {
+        for (let i = 1; i < rows[0].length; i++) {
+          let sum = 0;
+          let minorDiagonalColumnIndexAtFirstRow = i;
+          let rowIndex = 0;
+          for (let j = minorDiagonalColumnIndexAtFirstRow; j > -1; j--) {
+            sum += rows[rowIndex][j];
+            if (sum > 1) {
+              return true;
+            }
+            rowIndex++;
+            if (rowIndex > rows.length) {
+              break;
+            }
           }
         }
+
+        for (let i = 1; i < rows.length - 1; i++) {
+          let sum = 0;
+          let minorDiagonalRowIndexAtFirstColumn = i;
+          let colIndex = rows[0].length - 1;
+          for (let j = minorDiagonalRowIndexAtFirstColumn; j < rows.length; j++) {
+            sum += rows[j][colIndex];
+            if (sum > 1) {
+              return true;
+            }
+            colIndex--;
+            if (colIndex < 0) {
+              break;
+            }
+          }
+        }
+
       }
 
       return false; // fixme
